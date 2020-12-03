@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions'
+import { isObject } from './utils'
 
 
 type EnvConfig = Record<string, unknown>
@@ -7,11 +8,7 @@ type EnvConfig = Record<string, unknown>
 const newsletterConfig = functions.config().newsletter
 
 
-const isValidConfig = (val: unknown): val is EnvConfig =>
-  typeof val === 'object' && val !== null
-
-
-if (!isValidConfig(newsletterConfig)) {
+if (!isObject(newsletterConfig)) {
   throw new Error('Invalid environment variable config')
 }
 
