@@ -1,14 +1,19 @@
-import * as functions from 'firebase-functions';
-import { addSubscriberToMailingList } from './email'
+import * as functions from 'firebase-functions'
+import * as express from 'express'
+import * as cors from 'cors'
+import * as helmet from 'helmet'
+import subscribeHandler from './routes/subscribe'
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-export const helloWorld = functions.https.onRequest(async (request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
 
-  const user = 'henry@example.com' 
-  await addSubscriberToMailingList(user)
 
-  response.send(`Successfully added ${user} to mailing list`);
-});
+const app = express()
+
+app.use(cors())
+app.use(helmet())
+app.use(express.json())
+
+app.post('/subscribe', subscribeHandler)
+
+// Newsletter Service Entry Point
+export const newsletter = functions.https.onRequest(app);
+
