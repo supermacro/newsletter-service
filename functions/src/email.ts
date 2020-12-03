@@ -1,11 +1,12 @@
 import axios from 'axios'
 import * as FormData from 'form-data'
 import { EMAIL_SENDER_DOMAIN, MAILGUN_API_KEY } from './env'
+import { EmailApiOutcome, intoEmailApiOutcome } from './email-utils'
 
 
 const NEWSLETTER_NAME = 'newsletter'
 
-export const addSubscriberToMailingList = async (email: string): Promise<void> => {
+export const addSubscriberToMailingList = async (email: string): Promise<EmailApiOutcome> => {
   const form = new FormData()
 
   form.append('subscribed', 'yes')
@@ -15,13 +16,18 @@ export const addSubscriberToMailingList = async (email: string): Promise<void> =
 
   const endpoint = `https://api.mailgun.net/v3/lists/${mailingList}/members`
 
-  await axios.post(endpoint, form, {
-    auth: {
-      username: 'api',
-      password: MAILGUN_API_KEY,
-    },
-    headers: form.getHeaders(),
-  })
-}
+  try {
+    await axios.post(endpoint, form, {
+      auth: {
+        username: 'api',
+        password: MAILGUN_API_KEY,
+      },
+      headers: form.getHeaders(),
+    })
 
+    return EmailApiOutcome.Success
+  } catch (err) {
+    return intoEmailApiOutcome(err)
+  }
+}
 
