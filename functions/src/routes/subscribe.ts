@@ -1,23 +1,16 @@
-import { Request, Response } from 'express'
 import validator from 'validator'
 import { addSubscriberToMailingList } from '../email'
+import { createRoute, Validator } from '../router'
+import { intoHandlerResult } from '../utils'
 
 
+const emailValidator: Validator<string> = ({ email }) =>
+  (typeof email === 'string' && validator.isEmail(email))
+    ? email
+    : null
 
-export default (req: Request, res: Response) => {
-  if (typeof req.body.email !== 'string' || !validator.isEmail(req.body.email)) {
-    res.sendStatus(400)
-    return
-  }
-
-  const subscriberEmail = (req.body.email as string).toLowerCase()
-
-  addSubscriberToMailingList(subscriberEmail)
-    .then(() => {
-      res.sendStatus(200)
-    })
-    .catch(() => {
-      res.sendStatus(500)
-    })
-}
+export default createRoute(emailValidator, (email) =>
+  addSubscriberToMailingList(email.toLowerCase())
+    .then(intoHandlerResult)
+)
 
