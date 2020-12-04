@@ -29,4 +29,4 @@ const verifyEnv = (envName: keyof EnvConfig): string => {
 
 export const MAILGUN_API_KEY = verifyEnv('mailgun_api_key')
 export const EMAIL_SENDER_DOMAIN = verifyEnv('email_sender_domain')
-
+export const AUTH_SECRET = verifyEnv('auth_secret')
