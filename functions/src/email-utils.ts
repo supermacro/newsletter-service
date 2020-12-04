@@ -13,9 +13,18 @@ const isAxiosError = (err: unknown): err is AxiosError =>
   isObject(err) && !!err.isAxiosError
 
 
+const getError = (error: AxiosError): string => {
+  const maybeErrorMessage = error?.response?.data?.message
+
+  return typeof maybeErrorMessage === 'string'
+    ? maybeErrorMessage
+    : ''
+}
+
+
 export const intoEmailApiOutcome = (err: unknown): EmailApiOutcome => {
   if (isAxiosError(err)) {
-    if (err?.response?.status === 400) {
+    if (err?.response?.status === 400 && getError(err).includes('Address already exists')) {
       return EmailApiOutcome.Conflict
     }
 
