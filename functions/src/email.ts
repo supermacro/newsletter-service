@@ -56,7 +56,7 @@ const createRequest = (op: Operation) => (email: string): Promise<EmailApiOutcom
     auth: {
       username: 'api',
       password: MAILGUN_API_KEY,
-    }
+    },
   })
   .then(() => EmailApiOutcome.Success)
   .catch(intoEmailApiOutcome)
