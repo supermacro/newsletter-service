@@ -6,6 +6,7 @@ import { AUTH_SECRET } from './env'
 import { createAuthorizationMiddleware } from './middleware'
 import subscribeHandler from './routes/subscribe'
 import unsubscribeHandler from './routes/unsubscribe'
+import sendNewsletterHandler from './routes/send-newsletter'
 
 
 const app = express()
@@ -16,9 +17,7 @@ app.use(express.json())
 
 app.post('/subscribe', subscribeHandler)
 app.post('/unsubscribe', unsubscribeHandler)
-app.post('/send-newsletter', createAuthorizationMiddleware(AUTH_SECRET), (req, res) => {
-  res.sendStatus(501) // not implemented
-})
+app.post('/send-newsletter', createAuthorizationMiddleware(AUTH_SECRET), sendNewsletterHandler)
 
 // Newsletter Service Entry Point
 export const newsletter = functions.https.onRequest(app);
