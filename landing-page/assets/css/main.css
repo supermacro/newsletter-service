@@ -4205,3 +4205,9 @@ input, select, textarea {
 		margin-bottom: 15px !important;
 	}
 
+	#gio-img {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
