@@ -4211,3 +4211,8 @@ input, select, textarea {
 		margin-right: auto;
 	}
 	
+	@media screen and (max-width: 630px) {
+		#gio-img {
+			width: 80%;
+		}
+	}
