@@ -3,8 +3,8 @@ import { createRoute } from '../router'
 import { intoHandlerResult, emailValidator } from '../utils'
 
 
-export default createRoute(emailValidator, (email) =>
-  addSubscriberToMailingList(email.toLowerCase())
+export default createRoute(emailValidator, (email, queryParams) =>
+  addSubscriberToMailingList(email.toLowerCase(), queryParams?.list)
     .then(intoHandlerResult)
 )
 

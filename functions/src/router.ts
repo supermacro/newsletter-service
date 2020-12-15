@@ -7,9 +7,11 @@ export type HandlerResult
   | 'conflict'
 
 
+type ReqQuery = Request['query']
+
 export type Validator<T> = (requestBody: Record<string, unknown | undefined>) => T | null
 
-type Handler<T> = (data: T) => Promise<HandlerResult>
+type Handler<T> = (data: T, queryParams?: ReqQuery) => Promise<HandlerResult>
 
 const HttpStatusCodeMap: Record<HandlerResult, number> = {
   failed: 500,
@@ -27,7 +29,7 @@ export const createRoute = <T>(validator: Validator<T>, handler: Handler<T>) => 
       return 
     }
 
-    const handlerResult = await handler(validatioResult)
+    const handlerResult = await handler(validatioResult, req.query)
 
     const code = HttpStatusCodeMap[handlerResult]
 
