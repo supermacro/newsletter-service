@@ -24,6 +24,7 @@ export const createRoute = <T>(validator: Validator<T>, handler: Handler<T>) => 
   return async (req: Request, res: Response) => {
     const validatioResult = validator(req.body)
 
+
     if (!validatioResult) {
       res.sendStatus(400)
       return 

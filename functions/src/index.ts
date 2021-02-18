@@ -13,11 +13,14 @@ const app = express()
 
 app.use(cors())
 app.use(helmet())
-app.use(express.json())
 
-app.post('/subscribe', subscribeHandler)
-app.post('/unsubscribe', unsubscribeHandler)
-app.post('/send-newsletter', createAuthorizationMiddleware(AUTH_SECRET), sendNewsletterHandler)
+app.post('/subscribe', express.json(), subscribeHandler)
+app.post('/unsubscribe', express.json(), unsubscribeHandler)
+app.post(
+  '/send-newsletter',
+  createAuthorizationMiddleware(AUTH_SECRET),
+  sendNewsletterHandler
+)
 
 // Newsletter Service Entry Point
 export const newsletter = functions.https.onRequest(app);

@@ -1,0 +1,48 @@
+<mjml>
+  <mj-head>
+      <mj-preview>Giorgio's Experimental & Highly Infrequent Newsletter.</mj-preview>
+      <mj-style inline="inline">
+          .main-content h1,
+          .main-content h2,
+          .main-content h3,
+          .main-content h4,
+          .main-content h5,
+          .main-content h6 {
+            color: #535353;
+          }
+
+          .main-content blockquote {
+            opacity: 80%;
+          }
+
+          .main-content h2 {
+            margin-top: 30;
+          }
+      </mj-style>
+  </mj-head>
+  <mj-body>
+    <mj-section padding="10px 20px">
+        <mj-column>
+            <mj-divider border-width="1px" border-color="lightgrey" />
+            <mj-text line-height="16px">
+                <p>Hey there 👋, you are receiving this email because you subscribed to my newsletter via my <a href="https://newsletter-course.gdelgado.ca/" target="_blank">newsletter course</a> or my <a href="https://gdelgado.ca/pages/newsletter.html" target="_blank">personal site</a>. You can unsubscribe <a target="_blank" href="https://gdelgado.ca/pages/newsletter?unsubemail=%recipient_email%">here</a>.</p>
+            </mj-text>
+        <mj-column>
+    </mj-section>
+    <mj-section padding="5px 20px">
+        <mj-column>
+            <mj-text css-class="main-content" line-height="16px">
+                {{ content }}
+            </mj-text>
+        </mj-column> 
+    </mj-section>
+    <mj-section margin="0" padding="0 20px">
+        <mj-column>
+            <mj-text css-class="main-content" line-height="16px">
+                <p>Do you have any questions? Feedback? Want to chat? Feel free to reach me at yo@gdelgado.ca</p>
+            </mj-text>
+        </mj-column> 
+    </mj-section>
+  </mj-body>
+</mjml>
+
