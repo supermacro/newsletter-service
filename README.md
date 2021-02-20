@@ -1,5 +1,6 @@
-### Getting Set Up
+> I recorded how I built this whole project here: https://newsletter-course.gdelgado.ca/
 
+### Getting Set Up
 
 - Run `firbase init` to connect this repo to your own firebase project
 
@@ -13,4 +14,6 @@
   }
 }
 ```
+
+Deploying in production requires that you [add environment variables](https://firebase.google.com/docs/functions/config-env) to your firebase project.
 
