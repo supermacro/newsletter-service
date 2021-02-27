@@ -78,7 +78,9 @@ const createMailgunApiData = (op: Operation): MailgunApiData => {
       form.append('from', `Giorgio Delgado <${listName}>`)
       form.append('to', listName)
       form.append('subject', op.subject)
-      form.append('text', op.body)
+      // TODO: implement plaintext email 
+      // form.append('text', op.textBody)
+      form.append('html', op.body) 
 
 
       if (op.testMode) {
