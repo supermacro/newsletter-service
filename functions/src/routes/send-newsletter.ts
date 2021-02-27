@@ -1,45 +1,64 @@
 import { createRoute, Validator } from '../router'
 import { isString, intoHandlerResult } from '../utils'
-import { sendNewsletter } from '../email'
-import { readFileSync } from 'fs'
-import { Octokit } from '@octokit/rest'
-
-
-const github = new Octokit()
-
-github.repos.getContent({
-  owner: 'supermacro',
-  repo: 'newsletter-service',
-  path: 'functions/package.json',
-}).then(({ data }) => {
-  console.log('Fetched repo')
-  console.log(data)
-}).catch((err) => {
-  console.log('errrrrr')
-  console.log(err)
-})
-
-
-
-
-
-
+import { sendNewsletter, Newsletter } from '../email'
 
 interface SendNewsletter {
-  fileName: string
+  emailBody: string
+  subject: string
+  testMode: boolean
+  newsletter: Newsletter
 }
 
-const validator: Validator<SendNewsletter> = ({ fileName }) =>
-  isString(fileName) 
-    ? { fileName }
-    : null
-  
+const ACTIVE_NEWSLETTERS: Newsletter[] = [
+  'personal',
+  'parlezvous',
+  'testnewsletter',
+]
 
-export default createRoute(validator, ({ fileName }) => {
-  console.log('> Reading: ' + fileName)
-  const file = readFileSync(`../email-html/${fileName}`, 'utf8')
 
-  return sendNewsletter(file, 'Newsletter')
-    .then(intoHandlerResult)
+const isValidNewsletter = (val: unknown): val is Newsletter => {
+  const newsletters: string[] = [ ...ACTIVE_NEWSLETTERS ]
+
+  return isString(val) && newsletters.includes(val)
+}
+
+
+const validator: Validator<SendNewsletter> = ({
+  emailBody,
+  subject,
+  sendToSubscribers,
+  newsletter,
+}) => {
+  if (!isString(emailBody)) {
+    return null
+  }
+
+  if (!isString(subject)) {
+    return null
+  }
+
+  if (!isValidNewsletter(newsletter)) {
+    return null
+  }
+
+  const testMode = sendToSubscribers !== true
+
+  return {
+    emailBody,
+    subject,
+    testMode,
+    newsletter,
+  }
+}
+
+
+export default createRoute(validator, ({ emailBody, subject, testMode }) => {
+  const htmlEmailString = Buffer.from(emailBody, 'base64').toString()
+
+  return sendNewsletter(
+    htmlEmailString,
+    subject,
+    testMode
+  ).then(intoHandlerResult)
 })
 

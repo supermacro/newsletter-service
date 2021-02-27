@@ -5,10 +5,13 @@ import {
   PERSONAL_NEWSLETTER_NAME,
   PV_NEWSLETTER_NAME,
   MAILGUN_API_KEY,
-  EMAIL_END_USERS,
   PERSONAL_EMAIL_SENDER_DOMAIN,
   PV_EMAIL_SENDER_DOMAIN,
+  TEST_NEWSLETTER_NAME,
 } from './env'
+
+
+export type Newsletter = 'personal' | 'parlezvous' | 'testnewsletter'
 
 
 const createEndpoint = (path: string) =>
@@ -21,8 +24,18 @@ interface MailingListInfo {
 }
 
 type Operation
-  = { name: 'Subscribe' | 'Unsubscribe'; email: string, mailingList: MailingListInfo }
-  | { name: 'SendNewsletter'; subject: string; body: string, mailingList: MailingListInfo }
+  = {
+      name: 'Subscribe' | 'Unsubscribe'
+      email: string
+      mailingList: MailingListInfo
+  }
+  | {
+      name: 'SendNewsletter'
+      subject: string
+      body: string
+      mailingList: MailingListInfo
+      testMode: boolean
+  }
 
 
 interface MailgunApiData {
@@ -65,8 +78,10 @@ const createMailgunApiData = (op: Operation): MailgunApiData => {
       form.append('text', op.body)
 
 
-      if (!EMAIL_END_USERS) {
+      if (op.testMode) {
         form.append('o:testmode', 'yes')
+      } else {
+        throw new Error('NOT READY FOR THE BIG SHOW')
       }
 
       return {
@@ -100,10 +115,18 @@ const createRequest = (op: Operation): Promise<EmailApiOutcome> => {
 const getMailingListFromVal = (val?: unknown): MailingListInfo => {
   const personalList = `${PERSONAL_NEWSLETTER_NAME}@${PERSONAL_EMAIL_SENDER_DOMAIN}`
   const parlezVousList = `${PV_NEWSLETTER_NAME}@${PV_EMAIL_SENDER_DOMAIN}`
+  const testingList = `${TEST_NEWSLETTER_NAME}@${PERSONAL_EMAIL_SENDER_DOMAIN}`
 
-  return val === 'parlezvous'
-    ? { listName: parlezVousList, senderDomain: PV_EMAIL_SENDER_DOMAIN }
-    : { listName: personalList, senderDomain: PERSONAL_EMAIL_SENDER_DOMAIN }
+
+  if (val === 'parlezvous') {
+    return { listName: parlezVousList, senderDomain: PV_EMAIL_SENDER_DOMAIN }
+  }
+
+  if (val === 'personal') {
+    return { listName: personalList, senderDomain: PERSONAL_EMAIL_SENDER_DOMAIN }
+  }
+
+  return { listName: testingList, senderDomain: PERSONAL_EMAIL_SENDER_DOMAIN }
 }
 
 
@@ -123,13 +146,15 @@ export const unsubscribeUserFromMailingList = (email: string, mailingList?: unkn
     mailingList: getMailingListFromVal(mailingList),
   })
 
+
 // TODO: send query parameter for the parlezvous list
-export const sendNewsletter = (body: string, subject: string, mailingList?: unknown) =>
+export const sendNewsletter = (body: string, subject: string, testMode: boolean, mailingList?: unknown) =>
   createRequest({
     name: 'SendNewsletter',
     body,
     subject,
     mailingList: getMailingListFromVal(mailingList),
+    testMode,
   })
 
 

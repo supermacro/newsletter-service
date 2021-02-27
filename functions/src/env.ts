@@ -23,18 +23,6 @@ const verifyEnv = (envName: keyof EnvConfig): string => {
 }
 
 
-const verifyOptionalEnv = (envName: keyof EnvConfig): string | undefined => {
-  const value = newsletterConfig[envName]
-
-  if (value === undefined) {
-    return value
-  }
-
-  return verifyEnv(envName)
-}
-
-
-
 export const MAILGUN_API_KEY = verifyEnv('mailgun_api_key')
 
 export const PERSONAL_EMAIL_SENDER_DOMAIN = verifyEnv('personal_email_sender_domain')
@@ -44,5 +32,6 @@ export const PV_EMAIL_SENDER_DOMAIN = verifyEnv('pv_email_sender_domain')
 export const PV_NEWSLETTER_NAME = verifyEnv('pv_newsletter_name')
 
 export const AUTH_SECRET = verifyEnv('auth_secret')
-export const EMAIL_END_USERS = verifyOptionalEnv('email_end_users') === 'yes'
+
+export const TEST_NEWSLETTER_NAME = verifyEnv('test_newsletter_name')
 
